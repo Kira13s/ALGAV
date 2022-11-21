@@ -30,7 +30,7 @@ def luka (T:BDD)->str:
         T.luka=f"{T.val}({luka(T.left)})({luka(T.right)})"
         return T.luka
 
-def compression_luka(T:BDD):
+def compression_luka(T:BDD): # TO DOO
     if T.left.luka == T.right.luka:
         T.left = T.right
     else:
@@ -41,7 +41,7 @@ def compression_luka(T:BDD):
     pass
 
 
-def compression(T:BDD,d:dict={},i=-1):
+def compression(T:BDD,d:dict={},i=-1):  # TO DOO
 
     if not T.left and not T.right:
         if T.val not in d:
@@ -60,7 +60,7 @@ def compression(T:BDD,d:dict={},i=-1):
             T.val =d[ss]
     print(d)
     pass
-def dot (T:BDD,result = None):
+def dot (T:BDD,result = None):  # TO DOO
     if result is None:
         result='graph {\n'
     if not T.left and not T.right:

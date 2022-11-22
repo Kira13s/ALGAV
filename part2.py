@@ -60,28 +60,39 @@ def compression(T:BDD,d:dict={},i=-1):  # TO DOO
             T.val =d[ss]
     print(d)
     pass
-def dot (T:BDD,result = None):  # TO DOO
-    if result is None:
-        result='graph {\n'
-    if not T.left and not T.right:
-        return ""
-    else:
-        result += f"{T.val}--{T.left.val}" + dot(T.left,result)
-        dot(T.left,result)
-    
-        result.append(f"{T.val}--{T.right.val}")
-        dot(T.right,result)
-    
-    return result
+
+def traversal(root, pos):
+    res = ""
+    if root:
+        res += str(pos) + "[ label =\"" + str(root.val) + "\"];\n"
+        if root.left:
+            res += str(pos) + "--" + str(pos + 1) + "[style=dashed]\n"
+        temp = pos
+        new_res, pos = traversal(root.left,pos+1)
+        res = res + new_res
+        if root.right:
+            res += str(temp) + "--" + str(pos) + "\n"
+        new_res, pos = traversal(root.right,pos)
+        res = res + new_res
+    return res,pos
+
+def dot (T:BDD, filename: str):  # TO DOO
+    file = open(filename + ".dot", "w")
+    s = "graph { \n"
+    res,_ = traversal(T, 1)
+    s += res + "}"
+    file.write(s)
+    file.close()
     
 
+    
 if __name__ == "__main__" :
     t=table(38,8)
     #print(cons_arbre(t))
     abr =cons_arbre(t)
-    compression(abr)
-    print(abr)
-    t=luka(abr)
+    #compression(abr)
     #print(abr)
-    #print(dot(abr))
+    #t=luka(abr)
+    #print(abr)
+    dot(abr,"test")
     

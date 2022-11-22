@@ -2,7 +2,9 @@ from start import table
 from math import log2
 
 class BDD:
+    counter = 0
     def __init__(self, val ,left=None , right =None) -> None:
+        BDD.counter += 1
         self.val = val
         self.left = left
         self.right = right
@@ -31,14 +33,29 @@ def luka (T:BDD)->str:
         return T.luka
 
 def compression_luka(T:BDD): # TO DOO
-    if T.left.luka == T.right.luka:
-        T.left = T.right
-    else:
-        if T.left:
-            compression_luka(T.left)
-        if T.right:
-            compression_luka(T.right)
-    pass
+    if T is None:
+        return None
+    file = [T]
+    D = dict()
+
+    while len(file) > 0:
+        node = file.pop(0)
+        if node.left and node.right:
+            luka_l = luka(node.left)
+            if luka_l in D:
+                node.left = D[luka_l]
+            else:
+                D[luka_l] = node.left
+                file.append(node.left)
+            luka_r = luka(node.right)
+            if luka_r in D:
+                node.right = D[luka_r]
+            else:
+                D[luka_r] = node.right
+                file.append(node.right)
+        else:
+            break
+    return T
 
 
 def compression(T:BDD,d:dict={},i=-1):  # TO DOO
@@ -94,5 +111,6 @@ if __name__ == "__main__" :
     #print(abr)
     #t=luka(abr)
     #print(abr)
-    dot(abr,"test")
+    abr_com = compression_luka(abr)
+    #dot(abr,"test")
     

@@ -33,46 +33,43 @@ def luka (T:BDD)->str:
         T.luka=f"{T.val}({luka(T.left)})({luka(T.right)})"
         return T.luka
 
-def suffix(n, D):
-    if n.left and n.right:
-        if n.left.luka not in D:
-            D = suffix(n.left, D)
-        if n.right.luka not in D:
-            D = suffix(n.right, D)
-        if n.luka not in D:
-            D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
+#Parcours suffix compression
+def suffix_compression(n, D):
+    if n:
+        if n.left and n.right:
+            D = suffix_compression(n.left, D)
+            D = suffix_compression(n.right, D)
+            if n.luka not in D:
+                D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
     return D
         
-
-def compression_luka(T:BDD): # TO DOO
+#hypothèse: luka a déjà été appelé sur T
+def compression(T:BDD):
     if T is None:
         return None
     D = {"True": BDD(True), "False": BDD(False)}
-    luka_racine = luka(T)
-    D = suffix(T, D)
-    return D[luka_racine]
+    D = suffix_compression(T, D)
+    return D[T.luka]
 
+def suffix_bdd(n,D):
+    if n:
+        if n.left and n.right:
+            D = suffix_bdd(n.left, D)
+            D = suffix_bdd(n.right, D)
+            if D[n.left.luka] == D[n.right.luka]:
+                D[n.luka] = D[n.left.luka]
+            elif n.luka not in D:
+                D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
+    return D
 
-def compression(T:BDD,d:dict={},i=-1):  # TO DOO
+def compression_bdd(T:BDD):
+    if T is None:
+        return None
+    D = {"True": BDD(True), "False": BDD(False)}
+    D = suffix_bdd(T, D)
+    return D[T.luka]
 
-    if not T.left and not T.right:
-        if T.val not in d:
-            d[T.val] = i+1
-            return T.val
-        else:
-            T.val = d[T.val]
-            return d[T.val]
-    else:
-        
-        ss=(compression(T.left,d),compression(T.right,d),T.val)
-        if ss not in d:
-            d[ss]=i+1
-            return d[ss]
-        else:
-            T.val =d[ss]
-    print(d)
-    pass
-
+#traverse l'abre pour la fonction dot
 def traversal(n, D):
     res = ""
     if n:
@@ -108,9 +105,11 @@ if __name__ == "__main__" :
     abr =cons_arbre(t)
     #compression(abr)
     #print(abr)
-    #t=luka(abr)
+    luka(abr)
     #print(abr)
-    abr_com = compression_luka(abr)
+    abr_com = compression(abr)
+    abr_bdd = compression_bdd(abr)
     show(abr_com, "test_com")
     show(abr,"test")
+    show(abr_bdd, "test_bdd")
     

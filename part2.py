@@ -36,11 +36,10 @@ def luka (T:BDD)->str:
 #Parcours suffix compression
 def suffix_compression(n, D):
     if n:
-        if n.left and n.right:
-            D = suffix_compression(n.left, D)
-            D = suffix_compression(n.right, D)
-            if n.luka not in D:
-                D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
+        D = suffix_compression(n.left, D)
+        D = suffix_compression(n.right, D)
+        if n.luka not in D:
+            D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
     return D
         
 #hypothèse: luka a déjà été appelé sur T
@@ -86,7 +85,7 @@ def traversal(n, D):
     return res, D
 
 def dot (T:BDD, filename: str):  # TO DOO
-    file = open(filename + ".dot", "w")
+    file = open("graphe/"+filename + ".dot", "w")
     s = "graph { \n"
     res,_ = traversal(T, dict())
     s += res + "}"
@@ -96,7 +95,7 @@ def dot (T:BDD, filename: str):  # TO DOO
 #générer un fichier pdf du graphe de l'arbre
 def show(T:BDD, filename: str):
     dot(T,filename)
-    os.system("dot -Tpdf "+filename + ".dot -o " + filename + ".pdf")
+    os.system("dot -Tpdf "+"graphe/"+filename + ".dot -o " + "graphe/"+filename + ".pdf")
 
     
 if __name__ == "__main__" :

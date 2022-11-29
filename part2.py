@@ -3,9 +3,7 @@ from math import log2
 import os
 
 class BDD:
-    counter = 0
     def __init__(self, val ,left=None , right =None) -> None:
-        BDD.counter += 1
         self.val = val
         self.left = left
         self.right = right
@@ -102,8 +100,6 @@ if __name__ == "__main__" :
     t=table(38,8)
     #print(cons_arbre(t))
     abr =cons_arbre(t)
-    #compression(abr)
-    #print(abr)
     luka(abr)
     #print(abr)
     abr_com = compression(abr)

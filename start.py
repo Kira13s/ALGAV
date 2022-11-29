@@ -3,7 +3,7 @@ from typing import *
 def decomposition(n:int)->list:
 
     x=[]
-    while n != 1:
+    while n > 0:
         x.append(n%2)
         n = n//2
     out = x+[n]

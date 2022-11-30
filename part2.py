@@ -10,6 +10,9 @@ class BDD:
         self.luka =None
     def __repr__(self) -> str:
         return f"BDD [ val:{self.val}, left: {self.left},right: {self.right}, luka :{self.luka}]"
+    #retourne true si je suis une fueille
+    def leaf(self):
+        return self.right is None and self.left is None
 
 
 def cons_arbre(T:list)->BDD:
@@ -23,8 +26,7 @@ def cons_arbre(T:list)->BDD:
         return BDD(f'x{int(height)}',cons_arbre(T[:mid]),cons_arbre(T[mid:]))
 
 def luka (T:BDD)->str:
-
-    if not T.left and not T.right :
+    if T.leaf() :
         T.luka = str(T.val)
         return T.luka
     else:
@@ -37,20 +39,25 @@ def suffix_compression(n, D):
         D = suffix_compression(n.left, D)
         D = suffix_compression(n.right, D)
         if n.luka not in D:
-            D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
+            if n.leaf():
+                D[n.luka] = BDD(n.val)
+            else:
+                D[n.luka] = BDD(n.val, D[n.left.luka], D[n.right.luka])
     return D
         
 #hypothèse: luka a déjà été appelé sur T
 def compression(T:BDD):
     if T is None:
         return None
-    D = {"True": BDD(True), "False": BDD(False)}
-    D = suffix_compression(T, D)
+    D = suffix_compression(T, dict())
     return D[T.luka]
 
 def suffix_bdd(n,D):
     if n:
-        if n.left and n.right:
+        if n.leaf():
+            if n.luka not in D:
+                D[n.luka] = BDD(n.val)
+        else:
             D = suffix_bdd(n.left, D)
             D = suffix_bdd(n.right, D)
             if D[n.left.luka] == D[n.right.luka]:
@@ -74,7 +81,7 @@ def traversal(n, D):
             pos = len(D)
             res += str(pos) + " [ label = \"" + str(n.val) + "\" ];\n"
             D[n] = str(pos)
-            if n.left and n.right:
+            if not(n.leaf()):
                 new_res, D = traversal(n.left, D)
                 res += new_res + D[n] + "--" + D[n.left] + " [style=dashed];\n" 
                 new_res, D = traversal(n.right, D)

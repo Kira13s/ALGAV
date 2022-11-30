@@ -3,11 +3,11 @@ from math import log2
 import os
 
 class BDD:
-    def __init__(self, val ,left=None , right =None) -> None:
+    def __init__(self, val ,left=None , right =None, luka = None) -> None:
         self.val = val
         self.left = left
         self.right = right
-        self.luka =None
+        self.luka = luka
     def __repr__(self) -> str:
         return f"BDD [ val:{self.val}, left: {self.left},right: {self.right}, luka :{self.luka}]"
     #retourne true si je suis une fueille
@@ -49,6 +49,7 @@ def suffix_compression(n, D):
 def compression(T:BDD):
     if T is None:
         return None
+    luka(T)
     D = suffix_compression(T, dict())
     return D[T.luka]
 
@@ -69,8 +70,8 @@ def suffix_bdd(n,D):
 def compression_bdd(T:BDD):
     if T is None:
         return None
-    D = {"True": BDD(True), "False": BDD(False)}
-    D = suffix_bdd(T, D)
+    luka(T)
+    D = suffix_bdd(T, dict())
     return D[T.luka]
 
 #traverse l'abre pour la fonction dot

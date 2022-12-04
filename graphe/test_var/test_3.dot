@@ -1,0 +1,7 @@
+graph { 
+0 [ label = "x2" ];
+1 [ label = "True" ];
+0--1 [style=dashed];
+2 [ label = "False" ];
+0--2;
+}

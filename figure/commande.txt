@@ -1,0 +1,6 @@
+set terminal pngcairo
+set style line 1 lt 1 lw 2 pt 7 ps 1.5
+set output 'figure/image/var_4.png'
+set xlabel 'ROBDD node count for 4 variable'
+set ylabel 'Number of Boolean functions'
+plot 'figure/donnees/var_4.txt' with linespoints ls 1 notitle

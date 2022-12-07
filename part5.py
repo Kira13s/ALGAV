@@ -1,4 +1,4 @@
-from part2 import BDD, show, table, cons_arbre, compression_bdd, dot
+from part2 import BDD, show, table, cons_arbre, compression_bdd, dot,luka
 
 """
 Soeint x et y deux étiquettes de l'arbre T
@@ -60,19 +60,6 @@ def combinaison(op,B,C):
 	_, g = apply(op,B,C,dict())
 	return g
 
-
-def test(op,B,C,nametest):
-	g = combinaison(op,B,C)
-	dot(g,nametest)
-	execpted_file = open("test/"+nametest + ".dot", "r")
-	res_file = open("graphe/"+nametest + ".dot", "r")
-	execpted = execpted_file.readlines()
-	res = res_file.readlines()
-	assert res == execpted
-	execpted_file.close()
-	res_file.close()
-
-
 if __name__ == "__main__" :
 	_and = compression_bdd(cons_arbre(table(8,4)))
 	_or = compression_bdd(cons_arbre(table(14,4)))
@@ -81,21 +68,31 @@ if __name__ == "__main__" :
 	_not_x2 = compression_bdd(cons_arbre(table(3,4)))
 
 	# test 1 : (x1 and x2) or (not x1 and not x2)
-	test(lambda a, b : a or b,_and, compression_bdd(cons_arbre(table(1,4))),"test1")
+	g = combinaison(lambda a, b : a or b,_and, compression_bdd(cons_arbre(table(1,4))))
+	expected = compression_bdd((cons_arbre(table(9,4))))
+	assert g.luka == luka(expected)
 
 	#test 2 : (x1 and x2) or (x1 or x2)
-	test(lambda a, b : a or b,_and, _or,"test2")
+	g = combinaison(lambda a, b : a or b,_and, _or)
+	expected = compression_bdd((cons_arbre(table(14,4))))
+	assert g.luka == luka(expected)
+
 
 	# test 3 : x1 and (not x2)
-	test(lambda a, b : a and b, _x1, _not_x2, "test3")
-	
+	g = combinaison(lambda a, b: a and b,_x1,_not_x2)
+	expected = compression_bdd((cons_arbre(table(2,4))))
+	assert g.luka == luka(expected)
 
 	# test 4 : (x1 and not x2) or (not x1 and x2)
 	Z1 = compression_bdd(cons_arbre(table(2,4)))
 	Z2 = compression_bdd(cons_arbre(table(4,4)))
-	test(lambda a, b: a or b,Z1, Z2,"test4")
+	g = combinaison(lambda a, b: a or b,Z1, Z2)
+	expected = compression_bdd((cons_arbre(table(6,4))))
+	assert g.luka == luka(expected)
 
 	#test 5 : (x2 and x1) or not x2
-	test(lambda a, b: a or b,_and,_not_x1,"test5") 
+	g = combinaison(lambda a, b: a or b,_and,_not_x2) 
+	expected = compression_bdd((cons_arbre(table(11,4))))
+	assert g.luka == luka(expected)
 
 

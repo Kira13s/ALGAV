@@ -127,15 +127,6 @@ def show(T:BDD, filename: str):
     dot(T,filename)
     os.system("dot -Tpdf "+"graphe/"+filename + ".dot -o " + "graphe/"+filename + ".pdf")
 
-def count_node(T:BDD):
-    def aux(n, S):  
-        if n:
-            S = aux(n.left,S)
-            S = aux(n.right, S)
-            if n.luka not in S:
-                S.add(n.luka)
-        return S
-    return len(aux(T, set()))
     
 if __name__ == "__main__" :
     t=table(8,4)
@@ -144,8 +135,6 @@ if __name__ == "__main__" :
     abr_com = compression_momo(abr,{})
     abr_c = compression(abr)
     #abr_bdd = compression_bdd(abr)
-    print(count_node(abr_com))
-    print(count_node(abr_c))
     #show(abr_com, "momo_test1")
     #show(abr_c, "momo_test1_c")
     #abr_bdd =compressionROBDD_momo(abr_com)

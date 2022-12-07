@@ -46,12 +46,36 @@ def suffix_compression(n, D):
     return D
         
 #hypothèse: luka a déjà été appelé sur T
+def compression_momo(T:BDD,D:dict)->BDD:
+    if T is None:
+        return None
+    if T.luka in D:
+        return D[T.luka]
+    else:
+        D[T.luka]= T
+        if not T.leaf():
+            T.left = compression_momo(T.left,D)
+            T.right =compression_momo(T.right,D)
+        return T
+
+
 def compression(T:BDD):
     if T is None:
         return None
     luka(T)
     D = suffix_compression(T, dict())
     return D[T.luka]
+def compressionROBDD_momo(T:BDD):
+    if T.leaf():
+        return T
+    else:
+        T.left = compressionROBDD_momo(T.left)
+        T.right =compressionROBDD_momo(T.right)
+        if T.left.luka == T.right.luka:
+            return T.right
+        return T
+    ...
+    
 
 def suffix_bdd(n,D):
     if n:
@@ -105,14 +129,16 @@ def show(T:BDD, filename: str):
 
     
 if __name__ == "__main__" :
-    t=table(38,8)
+    t=table(8,4)
     #print(cons_arbre(t))
     abr =cons_arbre(t)
     luka(abr)
     #print(abr)
-    abr_com = compression(abr)
-    abr_bdd = compression_bdd(abr)
-    show(abr_com, "test_com")
-    show(abr,"test")
-    show(abr_bdd, "test_bdd")
-    
+    abr_com = compression_momo(abr,{})
+    #print(abr_com)
+    #abr_bdd = compression_bdd(abr)
+    #show(abr_com, "momo_test1")
+    abr_bdd =compressionROBDD_momo(abr_com)
+    show(abr_bdd,"momo_ROBDD1")
+    #show(abr,"test")
+    #show(abr_bdd, "test_bdd")

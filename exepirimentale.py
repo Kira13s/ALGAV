@@ -2,8 +2,9 @@ import part2 as bdd
 from start import table
 import os
 from time import time
-from random import sample
+from random import randint
 import pandas as pd
+
 def count_node(T:bdd.BDD):
 	def aux(n, S):	
 		if n:
@@ -18,7 +19,7 @@ def plot(n):
 	str_n = str(n)
 	file = open("figure/commande.txt", "w")
 	s = "set terminal pngcairo\n"
-	s += "set style line 1 lt 1 lw 2 pt 7 ps 1.5\n"
+	s += "set style line 1 lt 1 lw 2 pt 7 ps .65\n"
 	s += "set output 'figure/image/var_"+ str_n +".png'\n"
 	s += "set xlabel 'ROBDD node count for "+ str_n +" variable'\n"
 	s += "set ylabel 'Number of Boolean functions'\n"
@@ -28,7 +29,7 @@ def plot(n):
 	os.system("gnuplot -p < figure/commande.txt")
 
 #sample: contient les entiers qui vont être utilisé pour générer les tables
-def experience_var(n,sample):
+def experience_var(n,sample,filename):
 	D = dict()
 	k = pow(2,n)
 	for i in sample:
@@ -46,7 +47,7 @@ def experience_var(n,sample):
 	s = ""
 	for k in sorted(D.keys()) :
 		s += str(k) + " " + str(2*D[k]) + "\n"
-	file = open("figure/donnees/var_"+ str(n)+ ".txt", "w")
+	file = open(filename, "w")
 	file.write(s)
 	file.close()
 	return D
@@ -64,31 +65,36 @@ retourne la chaîne hh:mm:ss
 def convert_t(t):
 	h,res = t // 3600, t % 3600
 	m, s = res // 60, res % 60
-	return "{:02d}:{:02d}:{:02d}".format(h,m,s)
+	return "{:02.0f}:{:02.0f}:{:02.0f}".format(h,m,s)
 
-#crée la figure 10 et 9
+#crée la figure 10 et 11
 def figure10():
 	data = []
-	for i in range(5,9):
+	#change i pour varier les variables
+	for i in range(5,11):
 		k = pow(2,i)
-		lst = sample(range(0,pow(2,k-1)),5000)
+		lst = [randint(1,pow(2,k-1)) for _ in range(500000)]
+		lst.append(0)
 		tstart = time()
-		D = experience_var(i,lst)
+		D = experience_var(i,lst,"figure/donnees/var_"+ str(i)+ ".txt")
 		#en secondes
 		duree = time() - tstart
-		data.append([i,5000,len(D),convert_t(duree),duree / 5000])
+		data.append([i,500001,len(D),convert_t(duree),duree / 500001])
 		plot(i)
 
 	df = pd.DataFrame(data,columns=['No.Variables','No.Samples', 'No.Unique Sizes', 'Compute Time hh:mm:ss', 'Seconds per ROBDD'])
-	df.to_csv('figure/figure11.csv', index=False)
+	df.to_csv('figure/figure11.csv', index=False, mode = "a", header=False)
 
 #Calcule la distribution pour 5 variable et mesure le temps pris
 def var5():
+	k = pow(2,5)
 	t0 = time()
-	experience_var(5)
+	experience_var(5,range(pow(2, k-1)))
 	return time() - t0
 
-if __name__ == "__main__" :
-	var5()
 
+if __name__ == "__main__" :
+	figure10()
+	
+	
 	

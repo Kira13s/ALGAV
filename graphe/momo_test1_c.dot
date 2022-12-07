@@ -1,0 +1,13 @@
+graph { 
+0 [ label = "x2" ];
+1 [ label = "x1" ];
+2 [ label = "False" ];
+1--2 [style=dashed];
+1--2;
+0--1 [style=dashed];
+3 [ label = "x1" ];
+3--2 [style=dashed];
+4 [ label = "True" ];
+3--4;
+0--3;
+}

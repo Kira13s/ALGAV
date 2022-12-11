@@ -1,5 +1,17 @@
 from part2 import BDD, show, table, cons_arbre, compression_bdd, dot,luka
 
+def create_node(left, right, D,val):
+	luka = f"{val}({left.luka})({right.luka})"
+		
+	if left.luka == right.luka:
+		D[luka] = left
+	elif luka not in D:
+		res = BDD(val,left,right,luka)
+		D[luka] = res
+	return D, D[luka]
+
+
+
 """
 Soeint x et y deux étiquettes de l'arbre T
 Si x < y, alors dans le parcours de T, y est avant x
@@ -23,38 +35,20 @@ def apply(op,B,C,D):
 	if B.val == C.val:
 		D, left = apply(op,B.left,C.left,D)
 		D, right = apply(op,B.right,C.right,D)
-		luka = f"{B.val}({left.luka})({right.luka})"
+		
+		return create_node(left, right, D, B.val)
 
-		if left.luka == right.luka:
-			D[luka] = left
-		elif luka not in D:
-			res = BDD(B.val,left,right,luka)
-			D[luka] = res
-		return D, D[luka]
-
-	if not(B.leaf()) and  (C.leaf() or C.val < B.val):
+	if C.val < B.val:
 		D, left = apply(op,B.left,C,D)
 		D, right = apply(op,B.right,C,D)
-		luka = f"{B.val}({left.luka})({right.luka})"
 		
-		if left.luka == right.luka:
-			D[luka] = left
-		elif luka not in D:
-			res = BDD(B.val,left,right,luka)
-			D[luka] = res
-		return D, D[luka]
+		return create_node(left, right, D, B.val)
 
-	if B.leaf() or B.val < C.val:
+	if B.val < C.val:
 		D, left = apply(op,B,C.left,D)
 		D, right = apply(op,B,C.right,D)
-		luka = f"{C.val}({left.luka})({right.luka})"
 		
-		if left.luka == right.luka:
-			D[luka] = left
-		elif luka not in D:
-			res = BDD(C.val,left,right,luka)
-			D[luka] = res
-		return D, D[luka]
+		return create_node(left, right, D, C.val)
 
 def combinaison(op,B,C):
 	_, g = apply(op,B,C,dict())

@@ -36,9 +36,7 @@ def experience_var(n,sample,filename):
 		t = bdd.table(i,k)
 		abr = bdd.cons_arbre(t)
 		bdd.luka(abr)
-		#abr = bdd.compression_bdd(abr)
-		abr = bdd.compression_momo(abr,{})
-		abr = bdd.compressionROBDD_momo(abr)
+		abr = bdd.compression_bdd(abr)
 		bdd.luka(abr)
 		res = count_node(abr)
 		if res not in D:
@@ -73,7 +71,7 @@ def convert_t(t):
 def figure10():
 	data = []
 	#change i pour varier les variables
-	for i in range(5,7):
+	for i in range(6,11):
 		k = pow(2,i)
 		lst = [randint(1,pow(2,k-1)) for _ in range(500000)]
 		lst.append(0)
@@ -85,7 +83,7 @@ def figure10():
 		plot(i)
 
 	df = pd.DataFrame(data,columns=['No.Variables','No.Samples', 'No.Unique Sizes', 'Compute Time hh:mm:ss', 'Seconds per ROBDD'])
-	df.to_csv('figure/figure11_momo.csv', index=False, mode = "a", header=False)
+	df.to_csv('figure/figure11.csv', index=False, mode = "a", header=False)
 
 #Calcule la distribution pour 5 variable et mesure le temps pris
 def var5():

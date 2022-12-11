@@ -62,9 +62,10 @@ def compression_momo(T:BDD,D:dict)->BDD:
 def compression(T:BDD):
     if T is None:
         return None
-    luka(T)
+
     D = suffix_compression(T, dict())
     return D[T.luka]
+
 def compressionROBDD_momo(T:BDD):
     if T.leaf():
         return T
@@ -94,7 +95,7 @@ def suffix_bdd(n,D):
 def compression_bdd(T:BDD):
     if T is None:
         return None
-    luka(T)
+
     D = suffix_bdd(T, dict())
     return D[T.luka]
 
@@ -129,11 +130,11 @@ def show(T:BDD, filename: str):
 
     
 if __name__ == "__main__" :
-    t=table(8,4)
+    """t=table(8,4)
     abr =cons_arbre(t)
     luka(abr)
     abr_com = compression_momo(abr,{})
-    abr_c = compression(abr)
+    abr_c = compression(abr)"""
     #abr_bdd = compression_bdd(abr)
     #show(abr_com, "momo_test1")
     #show(abr_c, "momo_test1_c")
@@ -141,3 +142,4 @@ if __name__ == "__main__" :
     #show(abr_bdd,"momo_ROBDD1")
     #show(abr,"test")
     #show(abr_bdd, "test_bdd")
+    
